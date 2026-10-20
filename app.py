@@ -226,7 +226,7 @@ HTML_TEMPLATE = (
     "    <label><input type=\"checkbox\" onchange=\"toggleCol(4)\"> <span id=\"tog4\">Tags</span></label>\n"
     "    <label><input type=\"checkbox\" onchange=\"toggleCol(5)\"> <span id=\"tog5\">Type</span></label>\n"
     "    <label><input type=\"checkbox\" onchange=\"toggleCol(6)\"> <span id=\"tog6\">Path</span></label>\n"
-    "    <label><input type=\"checkbox\" checked onchange=\"toggleCol(7)\"> <span id=\"tog7\">Value</span></label>\n"
+    "    <label><input type=\"checkbox\" checked onchange=\"toggleCol(7)\"> <span id=\"tog7\">Document ID</span></label>\n"
     "  </div>\n"
     "\n"
     "  <div class=\"toolbar\">\n"
@@ -258,7 +258,7 @@ HTML_TEMPLATE = (
     "        <th class=\"c4 hidden\" onclick=\"sortTable(4)\"><span id=\"th4\">Tags</span></th>\n"
     "        <th class=\"c5 hidden\" onclick=\"sortTable(5)\"><span id=\"th5\">Type</span></th>\n"
     "        <th class=\"c6 hidden\" onclick=\"sortTable(6)\"><span id=\"th6\">Path</span></th>\n"
-    "        <th class=\"c7\" onclick=\"sortTable(7)\"><span id=\"th7\">Value</span></th>\n"
+    "        <th class=\"c7\" onclick=\"sortTable(7)\"><span id=\"th7\">Document ID</span></th>\n"
     "      </tr></thead>\n"
     "      <tbody></tbody>\n"
     "    </table>\n"
@@ -376,7 +376,7 @@ HTML_TEMPLATE = (
     "  btn_multi: '+ Multi', btn_single: '- Single',\n"
     "  multi_hint: 'Click to select/deselect - height resizable',\n"
     "  all_option: '-- All --', empty_option: '--- empty ---',\n"
-    "  col: ['Issued','Added','Title','Correspondent','Tags','Type','Path','Value'],\n"
+    "  col: ['Issued','Added','Title','Correspondent','Tags','Type','Path','Document ID'],\n"
     "  token_show: 'Show', token_hide: 'Hide',\n"
     "  st_loading: 'Loading documents...', st_page: 'Loading page', st_of: 'of',\n"
     "  st_done: 'documents loaded.', st_error: 'Error loading data!',\n"
@@ -807,11 +807,6 @@ def get_data():
         results = raw.get('results', [])
         output  = []
         for d in results:
-            val = ""
-            for cf in d.get('custom_fields', []):
-                v = cf.get('value')
-                if v is not None and str(v).strip():
-                    val = str(v); break
             doc_id = d.get('id', '')
             output.append({
                 "id":      doc_id,

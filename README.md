@@ -53,7 +53,7 @@ The table can display the following document metadata:
 - Tags
 - Document type
 - Storage path
-- Value
+- Document ID
 
 ---
 

@@ -693,17 +693,25 @@ HTML_TEMPLATE = (
     "window.loadDocs=loadDocs;\n"
     "\n"
     "function exportCSV(){\n"
+    "  if(!allDocs||allDocs.length===0){\n"
+    "    alert('No documents to export. Please load documents first.');\n"
+    "    return;\n"
+    "  }\n"
     "  var tr=T;\n"
     "  var csv=tr.col.map(function(h){return '\"'+h+'\"';}).join(';')+'\\n';\n"
     "  allDocs.forEach(function(d){\n"
     "    var cols=[d.created,d.added,d.title,d.corr,d.tags,d.type,d.path,d.val];\n"
-    "    csv+=cols.map(function(v){return '\"'+(v||'').replace(/\"/g,'\"\"')+'\"';}).join(';')+'\\n';\n"
+    "    csv+=cols.map(function(v){return '\"'+String(v==null?'':v).replace(/\"/g,'\"\"')+'\"';}).join(';')+'\\n';\n"
     "  });\n"
     "  var blob=new Blob(['\\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});\n"
+    "  var url=URL.createObjectURL(blob);\n"
     "  var link=document.createElement('a');\n"
-    "  link.href=URL.createObjectURL(blob);\n"
+    "  link.href=url;\n"
     "  link.download=tr.csv_file;\n"
+    "  document.body.appendChild(link);\n"
     "  link.click();\n"
+    "  document.body.removeChild(link);\n"
+    "  setTimeout(function(){URL.revokeObjectURL(url);},100);\n"
     "}\n"
     "window.exportCSV=exportCSV;\n"
     "\n"
@@ -807,7 +815,7 @@ def get_data():
         results = raw.get('results', [])
         output  = []
         for d in results:
-            doc_id = d.get('id', '')
+            doc_id = str(d.get('id', ''))
             output.append({
                 "id":      doc_id,
                 "created": (d.get('created','') or '').split('T')[0],
@@ -818,7 +826,7 @@ def get_data():
                 "type":    meta_cache['data']['document_types'].get(d.get('document_type'),""),
                 "path":    meta_cache['data']['storage_paths'].get(d.get('storage_path'),""),
                 "val":     doc_id,
-                "link":    conf['url']+"/documents/"+str(doc_id) if doc_id else ""
+                "link":    conf['url']+"/documents/"+doc_id if doc_id else ""
             })
         return jsonify({"count": count, "page_size": 25, "results": output})
 

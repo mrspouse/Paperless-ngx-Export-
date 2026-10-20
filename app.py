@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from datetime import date
 import requests
 from flask import Flask, render_template_string, jsonify, request, Response
 from flask_limiter import Limiter
@@ -16,6 +17,14 @@ limiter = Limiter(
 )
 
 CONFIG_FILE = './config.json'
+
+def get_default_dates():
+    today = date.today()
+    try:
+        from_date = today.replace(year=today.year - 5)
+    except ValueError:
+        from_date = today.replace(year=today.year - 5, day=28)
+    return from_date.isoformat(), today.isoformat()
 
 def load_config():
     default = {"url": "", "token": ""}
@@ -199,11 +208,11 @@ HTML_TEMPLATE = (
     "      </div>\n"
     "      <div class=\"filter-card\">\n"
     "        <div class=\"filter-card-header\"><label id=\"lbl-date-from\">From</label></div>\n"
-    "        <input type=\"date\" id=\"f_date_gte\">\n"
+    "        <input type=\"date\" id=\"f_date_gte\" value=\"{{ default_date_from }}\">\n"
     "      </div>\n"
     "      <div class=\"filter-card\">\n"
     "        <div class=\"filter-card-header\"><label id=\"lbl-date-to\">To</label></div>\n"
-    "        <input type=\"date\" id=\"f_date_lte\">\n"
+    "        <input type=\"date\" id=\"f_date_lte\" value=\"{{ default_date_to }}\">\n"
     "      </div>\n"
     "    </div>\n"
     "  </div>\n"
@@ -557,8 +566,8 @@ HTML_TEMPLATE = (
     "      if(sel) sel.selectedIndex=0;\n"
     "    }\n"
     "  });\n"
-    "  document.getElementById('f_date_gte').value='';\n"
-    "  document.getElementById('f_date_lte').value='';\n"
+    "  document.getElementById('f_date_gte').value='{{ default_date_from }}';\n"
+    "  document.getElementById('f_date_lte').value='{{ default_date_to }}';\n"
     "}\n"
     "window.resetFilters=resetFilters;\n"
     "\n"
@@ -718,7 +727,14 @@ HTML_TEMPLATE = (
 def index():
     conf = load_config()
     fetch_all_meta()
-    html = render_template_string(HTML_TEMPLATE, meta=meta_cache['data'], conf=conf)
+    default_from, default_to = get_default_dates()
+    html = render_template_string(
+        HTML_TEMPLATE,
+        meta=meta_cache['data'],
+        conf=conf,
+        default_date_from=default_from,
+        default_date_to=default_to
+    )
     return Response(html, content_type='text/html; charset=utf-8')
 
 

@@ -1,27 +1,28 @@
-# Schlankes Python-Image als Basis
+# Lightweight Python base image
 FROM python:3.13-slim
 
-# Arbeitsverzeichnis im Container
+# Working directory in container
 WORKDIR /app
 
-# Abhängigkeiten kopieren und installieren
+# Copy and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Den Code kopieren
+# Copy application code and static assets
 COPY app.py .
 COPY static ./static
 
-# Datenverzeichnis erstellen
+# Create data directory
 RUN mkdir -p /data
 
-# Port 5001 freigeben
+# Expose port 5001
 EXPOSE 5001
 
-# Sicherheit: nicht als root laufen
+# Security: do not run as root
 RUN adduser --disabled-password --gecos "" appuser && \
     chown -R appuser:appuser /app /data
 USER appuser
 
-# App starten
+# Start application
 CMD ["python", "app.py"]
+

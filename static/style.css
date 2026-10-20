@@ -45,30 +45,6 @@ body {
   gap: 16px;
 }
 
-.lang-switcher {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.lang-btn {
-  background: none;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 22px;
-  padding: 2px 4px;
-  line-height: 1;
-  transition: border-color 0.2s, transform 0.1s;
-}
-
-.lang-btn:hover {
-  transform: scale(1.15);
-}
-
-.lang-btn.active {
-  border-color: var(--primary);
-}
 
 .filter-section {
   display: grid;
@@ -499,8 +475,8 @@ tr:hover td {
 }
 
 /* =====================================================
-   JS-TOOLTIP (per body-angehaengtem div)
-   Funktioniert auch in Tabellenzellen mit overflow:hidden
+   JS-TOOLTIP (attached to body)
+   Works in table cells with overflow:hidden
    ===================================================== */
 #js-tooltip {
   position: fixed;

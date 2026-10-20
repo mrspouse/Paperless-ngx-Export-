@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Den Code kopieren
 COPY app.py .
+COPY static ./static
 
 # Datenverzeichnis erstellen
 RUN mkdir -p /data

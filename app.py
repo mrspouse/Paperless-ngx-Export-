@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import time
 from datetime import date
 import requests
@@ -16,7 +17,9 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
-CONFIG_FILE = './config.json'
+# Pass a config name or JSON path as the first argument, e.g. `uv run app.py paperless`.
+config_name = sys.argv[1] if len(sys.argv) > 1 else 'config'
+CONFIG_FILE = config_name if config_name.endswith('.json') else config_name + '.json'
 
 def get_default_dates():
     today = date.today()
@@ -47,7 +50,7 @@ def load_config():
 
 def save_config(url, token):
     url = url.rstrip('/')
-    os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
+    os.makedirs(os.path.dirname(CONFIG_FILE) or '.', exist_ok=True)
     with open(CONFIG_FILE, 'w') as f:
         json.dump({"url": url, "token": token}, f)
 
@@ -848,4 +851,4 @@ def refresh_meta():
 
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=7001, debug=False)
